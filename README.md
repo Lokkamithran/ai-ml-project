@@ -1,2 +1,2 @@
-# Sarcasm Detector using Machine Learning
-Create and store a ml model
+# Credit Card Approval using Machine Learning
+
