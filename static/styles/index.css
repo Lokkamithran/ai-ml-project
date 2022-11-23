@@ -2,38 +2,27 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  align-content: center;
+  display: grid;
+  text-align: center;
 }
 
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  /* background-color: #7E99F4; */
   background-image: linear-gradient(to bottom right, #000000, #0ca9e7);
   display: grid;
   place-items: center;
   min-height: 100vh;
-  overflow: hidden;
 }
 
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
   
-  body {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    background-color: #819af2;
-    display: grid;
-    place-items: center;
-    min-height: 100vh;
-    overflow: hidden;
-  }
-  
+h2 {
+  margin-top: 20px;
+}
   .container {
     background-color: #fff;
     width: 70%;
-    height: 60%;
+    /* height: 60%; */
     position: relative;
     display: grid;
     display: flex;
@@ -44,6 +33,7 @@ body {
     line-height: 1.5;
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.185);
     border-radius:  20px;
+    margin: 70px;
   }
 
   .container::after {
@@ -75,26 +65,28 @@ body {
     margin: 10px 0;
   }
   .container-text input,
-  .container-text button {
-    width: 100%;
+  .container-text button, 
+  .container-text select {
     border: none;
     padding: 14px;
     border-radius: 3px;
   }
-  .container-text input {
-    border: 2px solid #DADDEC;
+  .container-text input,  .container-text select {
+    border: 1.3px solid #2000FF;
     margin: 5px 0 10px;
     font-size: 1rem;
-    color: #656880;
+    color: #000000;
   }
   .container-text button {
-    background-image: linear-gradient(to right, #89CAFF, #6589FF);
+    background-image: linear-gradient(to right, #003CFF, #45ABFF);
     display: block;
     color: #fff;
     font-size: 1rem;
     cursor: pointer;
     box-shadow: 0 5px 20px #89caff94;
     transition: box-shadow 0.3s ease-in-out;
+    margin-bottom: 20px;
+
   }
   .container-text button:hover {
     box-shadow: none;
