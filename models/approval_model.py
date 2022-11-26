@@ -62,19 +62,42 @@ df.drop(['Months from today', 'MONTHS_BALANCE'], axis=1, inplace=True)
 X = df.iloc[:,1:-1] # X value contains all the variables except labels
 y = df.iloc[:,-1] # these are the labels
 
+
+
+# mms = MinMaxScaler()
+# xmax = X.max().to_csv("xmax.csv",index=False)
+# print(xmax)
+# xmin = X.min().to_csv("xmin.csv",index=False)
+# print(xmin)
+
+
+# print(X)
+# print(y)
+
+x_std = (X - X.min(axis = 0))/(X.max(axis=0) - X.min(axis=0))
+# print(x_std)
+# print(X_train.columns)
+# print(mms.fit_transform(X_train)[0])
+# X_scaled = pd.DataFrame(mms.fit_transform(X), columns=X.columns)
+# x_std.to_csv('x_std.csv')
+# X_test_scaled = pd.DataFrame(mms.transform(X_test), columns=X_test.columns)
+
 # Creating the test-train split
-X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3)
+X_train, X_test, y_train, y_test = train_test_split(x_std,y, test_size=0.3)
+# print(y_test.head())
 
 # Scaling the data using MinMaxScaler
-mms = MinMaxScaler()
-X_scaled = pd.DataFrame(mms.fit_transform(X_train), columns=X_train.columns)
-X_test_scaled = pd.DataFrame(mms.transform(X_test), columns=X_test.columns)
+# mms = MinMaxScaler()
+# print(X_train.columns)
+# print(mms.fit_transform(X_train)[0])
+# X_scaled = pd.DataFrame(mms.fit_transform(X_train), columns=X_train.columns)
+# X_test_scaled = pd.DataFrame(mms.transform(X_test), columns=X_test.columns)
 
 # Solving the over-sampling issue
 oversample = SMOTE()
-X_balanced, y_balanced = oversample.fit_resample(X_scaled, y_train)
-X_test_balanced, y_test_balanced = oversample.fit_resample(X_test_scaled, y_test)
-
+X_balanced, y_balanced = oversample.fit_resample(X_train, y_train)
+X_test_balanced, y_test_balanced = oversample.fit_resample(X_test, y_test)
+# y_test_balanced.to_csv("ytest.csv",index=False)
 # Before: 
 # print(y_train.value_counts())
 # print(y_test.value_counts())
@@ -82,22 +105,55 @@ X_test_balanced, y_test_balanced = oversample.fit_resample(X_test_scaled, y_test
 # print(y_balanced.value_counts())
 # print(y_test_balanced.value_counts())
 
-mlp = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(5, 2), random_state=1, max_iter=10000)
+mlp = MLPClassifier(solver='adam', alpha=1e-5,hidden_layer_sizes=(7, 2), random_state=1, max_iter=10000, shuffle = True)
 
 mlp.fit(X_balanced, y_balanced)
-
+# X_balanced.to_csv("xbal.csv",index=False)
+# y_balanced.to_csv("ybal.csv",index=False)
 # Saving the model into a pickle file
 filename = 'mlp_model.pkl'
 pickle.dump(mlp, open(filename, 'wb'))
 # Saving the label encoder into a pickle file
-le_file = 'le_file.pkl'
-pickle.dump(le, open(le_file, 'wb'))
+# le_file = 'le_file.pkl'
+# pickle.dump(le, open(le_file, 'wb'))
 # Saving the MinMaxScaler into a pickle file
-minmax_file = 'minmax_file.pkl'
-pickle.dump(mms, open(minmax_file, 'wb'))
+# minmax_file = 'minmax_file.pkl'
+# pickle.dump(mms, open(minmax_file, 'wb'))
 
 train_score = mlp.score(X_balanced, y_balanced)
 test_score = mlp.score(X_test_balanced, y_test_balanced)
 
 print(train_score)
 print(test_score)
+
+
+# input_list = ['M', 'N', 'N', 999, 10, 'Pensioner', 'Incomplete higher', 'Civil marriage', 'With parents', -1, 11]
+# input_list = ['M', 'Y', 'Y', 2, 100000000000, 'Working', 'Academic degree', 'Married', 'House / apartment', -1000, 4]
+# input_list = ['F', 'N', 'N', 2, 100000000000, 'Working', 'Academic degree', 'Married', 'House / apartment', -1000, 4]
+
+# input_df = pd.DataFrame([input_list], columns=['CODE_GENDER','FLAG_OWN_CAR','FLAG_OWN_REALTY','CNT_CHILDREN','AMT_INCOME_TOTAL','NAME_INCOME_TYPE','NAME_EDUCATION_TYPE','NAME_FAMILY_STATUS','NAME_HOUSING_TYPE','DAYS_EMPLOYED','CNT_FAM_MEMBERS'])
+# print(input_df)
+# print()
+# # print(input_df.dtypes)
+
+# for x in input_df:
+#     if input_df[x].dtypes == 'object':
+#         print("le done", input_df[x])
+#         input_df[x] = le.fit_transform(input_df[x].values)
+        
+
+# print(input_df)
+# print()
+# X = input_df
+# X_scaled = pd.DataFrame(mms.fit_transform(X.values))
+# print(X_scaled)
+# print()
+# prediction = mlp.predict(X_scaled.values)
+# print(prediction)
+# print()
+# if prediction[0] == 0:
+#     print('Your application will be approved')
+# else:
+#     print('Your application won\'t be approved')
+
+    # 1 1 1 1 100000000 1 5 1 1000  3

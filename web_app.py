@@ -61,13 +61,20 @@ def predict():
     # print(X.info())
     prediction = loaded_model.predict(X_scaled)
 
+    print(prediction)
+    print()
+    print()
+    print()
+
+
     if prediction[0] == 0:
-        printtext = "Your application won\'t be approved"
-    else:
         printtext = "Your application will be approved"
+    else:
+        printtext = "Your application won\'t be approved"
 
     return render_template('index.html', prediction_text=printtext)
 
 if __name__ == "__main__":
     app.run()
 
+#  export FLASK_DEBUG=1
