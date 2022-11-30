@@ -105,7 +105,7 @@ X_test_balanced, y_test_balanced = oversample.fit_resample(X_test, y_test)
 # print(y_balanced.value_counts())
 # print(y_test_balanced.value_counts())
 
-mlp = MLPClassifier(solver='adam', alpha=1e-5,hidden_layer_sizes=(7, 2), random_state=1, max_iter=10000, shuffle = True)
+mlp = MLPClassifier(solver='adam', alpha=1e-5,hidden_layer_sizes=(9, 2), random_state=1, max_iter=10000, shuffle = True)
 
 mlp.fit(X_balanced, y_balanced)
 # X_balanced.to_csv("xbal.csv",index=False)
