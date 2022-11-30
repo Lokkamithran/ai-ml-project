@@ -1,5 +1,6 @@
 # Credit Card Approval using Machine Learning
 
+<<<<<<< HEAD
 # Installing necessary modules
 ```bash
 pip3 install scikit-learn
@@ -21,3 +22,5 @@ mv mlp_model.pkl ../mlp_model.pkl
 ```bash
 python3 web_app.py
 ```
+=======
+>>>>>>> b8cf50aa0134fb3c456c654f1173f86d74bd8a2b

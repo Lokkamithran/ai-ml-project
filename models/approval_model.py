@@ -62,6 +62,7 @@ df.drop(['Months from today', 'MONTHS_BALANCE'], axis=1, inplace=True)
 X = df.iloc[:,1:-1] # X value contains all the variables except labels
 y = df.iloc[:,-1] # these are the labels
 
+<<<<<<< HEAD
 
 
 # mms = MinMaxScaler()
@@ -98,6 +99,21 @@ oversample = SMOTE()
 X_balanced, y_balanced = oversample.fit_resample(X_train, y_train)
 X_test_balanced, y_test_balanced = oversample.fit_resample(X_test, y_test)
 # y_test_balanced.to_csv("ytest.csv",index=False)
+=======
+# Creating the test-train split
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3)
+
+# Scaling the data using MinMaxScaler
+mms = MinMaxScaler()
+X_scaled = pd.DataFrame(mms.fit_transform(X_train), columns=X_train.columns)
+X_test_scaled = pd.DataFrame(mms.transform(X_test), columns=X_test.columns)
+
+# Solving the over-sampling issue
+oversample = SMOTE()
+X_balanced, y_balanced = oversample.fit_resample(X_scaled, y_train)
+X_test_balanced, y_test_balanced = oversample.fit_resample(X_test_scaled, y_test)
+
+>>>>>>> b8cf50aa0134fb3c456c654f1173f86d74bd8a2b
 # Before: 
 # print(y_train.value_counts())
 # print(y_test.value_counts())
@@ -105,25 +121,41 @@ X_test_balanced, y_test_balanced = oversample.fit_resample(X_test, y_test)
 # print(y_balanced.value_counts())
 # print(y_test_balanced.value_counts())
 
+<<<<<<< HEAD
 mlp = MLPClassifier(solver='adam', alpha=1e-5,hidden_layer_sizes=(9, 2), random_state=1, max_iter=10000, shuffle = True)
 
 mlp.fit(X_balanced, y_balanced)
 # X_balanced.to_csv("xbal.csv",index=False)
 # y_balanced.to_csv("ybal.csv",index=False)
+=======
+mlp = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(5, 2), random_state=1, max_iter=10000)
+
+mlp.fit(X_balanced, y_balanced)
+
+>>>>>>> b8cf50aa0134fb3c456c654f1173f86d74bd8a2b
 # Saving the model into a pickle file
 filename = 'mlp_model.pkl'
 pickle.dump(mlp, open(filename, 'wb'))
 # Saving the label encoder into a pickle file
+<<<<<<< HEAD
 # le_file = 'le_file.pkl'
 # pickle.dump(le, open(le_file, 'wb'))
 # Saving the MinMaxScaler into a pickle file
 # minmax_file = 'minmax_file.pkl'
 # pickle.dump(mms, open(minmax_file, 'wb'))
+=======
+le_file = 'le_file.pkl'
+pickle.dump(le, open(le_file, 'wb'))
+# Saving the MinMaxScaler into a pickle file
+minmax_file = 'minmax_file.pkl'
+pickle.dump(mms, open(minmax_file, 'wb'))
+>>>>>>> b8cf50aa0134fb3c456c654f1173f86d74bd8a2b
 
 train_score = mlp.score(X_balanced, y_balanced)
 test_score = mlp.score(X_test_balanced, y_test_balanced)
 
 print(train_score)
+<<<<<<< HEAD
 print(test_score)
 
 
@@ -157,3 +189,6 @@ print(test_score)
 #     print('Your application won\'t be approved')
 
     # 1 1 1 1 100000000 1 5 1 1000  3
+=======
+print(test_score)
+>>>>>>> b8cf50aa0134fb3c456c654f1173f86d74bd8a2b
