@@ -1,6 +1,5 @@
 # Credit Card Approval using Machine Learning
 
-<<<<<<< HEAD
 # Installing necessary modules
 ```bash
 pip3 install scikit-learn
