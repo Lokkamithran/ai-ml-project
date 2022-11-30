@@ -1,0 +1,92 @@
+#Database explanation
+
+#application_record.csv
+It contains 18 columns:
+ID: Client number
+CODE_GENDER: Gender
+FLAG_OWN_CAR: Is there a car
+FLAG_OWN_REALTY: Is there a property
+CNT_CHILDREN: Number of children
+AMT_INCOME_TOTAL: Annual income
+NAME_INCOME_TYPE: Income category
+NAME_EDUCATION_TYPE: Education level
+NAME_FAMILY_STATUS: Marital status
+NAME_HOUSING_TYPE: Way of living
+DAYS_BIRTH: Birthday
+DAYS_EMPLOYED: Start date of employment (Count backwards from current day(0). If positive, it means the person currently unemployed.)
+FLAG_MOBIL: Is there a mobile phone
+FLAG_WORK_PHONE: Is there a work phone
+FLAG_PHONE: Is there a phone
+FLAG_EMAIL: Is there an email
+OCCUPATION_TYPE: Occupation
+CNT_FAM_MEMBERS: Family size
+
+#credit_record.csv
+It contains 3 columns:
+ID: Client number
+MONTHS_BALANCE:	Record month (The month of the extracted data is the starting point, backwards, 0 is the current month, -1 is the previous month, and so on)
+STATUS:	Status (0: 1-29 days past due 1: 30-59 days past due 2: 60-89 days overdue 3: 90-119 days overdue 4: 120-149 days overdue 5: Overdue or bad debts, write-offs for more than 150 days C: paid off that month X: No loan for the month)
+
+# Code explanation
+
+#approval_model.py
+We read the application_record csv file into the app_record dataframe.
+We read the credit_record csv file into the credit_record dataframe.
+
+Duplicate IDs in the app_record are dropped, only keeping the last encountered one.
+OCCUPATION_TYPE column is dropped as it contains null values in some rows.
+We also dropped the following colums as we felt they didn't play an important role in determining applicant status:
+DAYS_BIRTH, 
+FLAG_MOBIL, 
+FLAG_WORK_PHONE, 
+FLAG_PHONE and 
+FLAG_EMAIL 
+
+All positive numbers in the DAYS_EMPLOYED column represent the same thing: the applicant is unemployed. So, all positive values are converted to 0.
+
+We use the LabelEncoder to convert all strings in the data to numericals as they are easier for a model to process.
+
+Going through the data, we found that there were a few outliers in the CNT_CHILDREN, AMT_INCOME_TOTAL and CNT_FAM_MEMBERS columns. Outliers reduce the model's accuracy so we remove them by erasing the top 0.001th quantile and bottom 0.001th quantile of those columns.
+
+In the credit_record dataframe, C and X in the STATUS column indicate non-defaulters while other values indicate the applicant has left dues unpaid. All the defaulters' status are converted to 1 while it's converted to 0 for the non-defaulters.
+The credit_record dataframe is grouped and merged with the app_record dataframe by ID.
+
+All the independant variables(all the columns except STATUS) are stored in X while the dependant variable(STATUS) is stored in y.
+
+All the columns in X are scaled with the formula:
+x_std = (x - x_min)/(x_max - x_min)
+where, 
+x_std is the new value,
+x is the old value,
+x_max is the max value in that particular column
+x_min is the min value in that particular column
+
+Scaling makes the model more accurate as it can compare values that are closer to each other more easily and accurately than values that are spread over a wide range.
+
+We divide the database into 70% for training and 30% for testing.
+
+We noticed that the occurances of 0 in STATUS(non-defaulters) were around 6500 while 1(defaulters) were only around 1000.
+To solve this oversampling issue, we use SMOTE which draws an imaginary line between two data points and adds random points on the line into the database until there are an equal number of 1s and 0s.
+
+We import an mlp classifier which uses the 'adam' solver which is better for large databases such as this.
+The model is then trained with the dataframes and dumped into a pickle file to be retrieved later.
+
+The training and test scores of the model are also printed.
+
+#web_app.py
+This is the interface with which the user will be interacting with.
+
+The saved model from earlier is loaded back from the pickle file.
+A flask object is declared as 'app' which when run start a web application for the user to input data and receive their prediction.
+
+All the various inputs such as CODE_GENDER, FLAG_OWN_CAR and others are obtained from the user in their numerical form.
+If the integer values(like CNT_CHILDREN) don't fall in the range from the original database, they are converted to the edge value in the range.
+
+The x_min and x_max values are loaded from a pickle file and the necessary columns are scaled.
+
+All the columns are put into a dataframe and then feeded into the loaded model for prediction.
+The model outputs an array containing two values:
+prediction[0]: Probability of the applicant getting approved
+prediction[1]: Probability of the applicant getting rejected
+
+If the probability of getting approved is over 70%, the applicant is approved and this result is printed onto the web app.
